@@ -14,23 +14,51 @@
         canvas.height=document.documentElement.clientHeight
         //画线
         let ctx =canvas.getContext("2d");
-
+        ctx.fillStyle='black';
+        ctx.strokeStyle='blaclk';
+        ctx.lineWidth=8;
+        ctx.lineCap="round";
         let patting=false;
+        let last
+        
+        function drawLine(x1,y1,x2,y2){
+            ctx.beginPath();
+            ctx.moveTo(x1,y1);
+            ctx.lineTo(x2,y2);
+            ctx.stroke();
+        }
+        var isTouchDevice='ontouchstart' in document.documentElement;
+        document.documentElement
+        if(isTouchDevice){
+            canvas.ontouchstart=(e)=>{
+                let x=e.touches[0].clientX
+                let y=e.touches[0].clientY
+                last=[x,y]
+            }
+            canvas.ontouchmove=(e)=>{
+                let x=e.touches[0].clientX
+                let y=e.touches[0].clientY
+                drawLine(last[0], last[1], x,y)
+                last = [x,y]
 
-        ctx.fillStyle="blue";
-        canvas.onmousedown=()=>{
-            patting=true;
+            }
+        }else{
+        canvas.onmousedown=(e)=>{
+            patting=true
+            last = [e.clientX,e.clientY]
+            console.log(last)
         }
         canvas.onmousemove=(e)=>{
             if(patting===true){
-                ctx.fillRect(e.clientX-5,e.clientY-5,10,10);
-            }else{
-                console.log('什么都不不做')
+                console.log(last)
+                drawLine(last[0], last[1], e.clientX, e.clientY)
+                last = [e.clientX,e.clientY]
             }
             
         }
         canvas.onmouseup=()=>{
             patting=false;
+        }    
         }
     </script>
 </body>
